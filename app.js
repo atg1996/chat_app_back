@@ -28,10 +28,10 @@ app.use(require("morgan")("dev"))
 // TODO: Investigate and use mysql connection pooling here
 const connection = mysql.createConnection({
     // TODO: Same here, move all environment constants to a environment file
-    host: 'localhost',
-    user: 'root',
-    password: 'innorise2021',
-    database: 'chat'
+    host: 'sql11.freemysqlhosting.net',
+    user: 'sql11419653',
+    password: 'ftpgF1nGeq',
+    database: 'sql11419653'
 });
 
 app.post('/message', async (req, res) => {
