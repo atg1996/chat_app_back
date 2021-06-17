@@ -12,12 +12,12 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "custom-env": "^2.0.1",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "express-session": "^1.17.2",
     "express-sessions": "^1.0.6",
     "jsonwebtoken": "^8.5.1",
-    "jw-paginate": "^1.0.4",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
