@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 
 // TODO: Use environment file for storing the properties such as below (HTTP_PORT).  You may consider using a YAML format for storing the properties
-const port = 8000
+const port = 3000
 
 const app = express();
 
@@ -81,6 +81,7 @@ app.post("/login", async (req, res) => {
             const token = await jwt.sign({userID: results[0].id}, 'chat-app', {expiresIn: '10h'});
             // TODO: results may be missing.  Meaning, no users are found and here the results[0] won't exist
             let rows = results[0];
+            console.log(rows.length);
             if(rows.length > 0) {
                 if(rows.length === 1) {
                     let user = results[0][0];
@@ -138,7 +139,6 @@ app.post("/messages", async (req,res) => {
         const receiverId = req.body.receiver;
         // TODO: Pagination for the messages !!!
         const results = await connection.promise().query('SELECT * FROM messages WHERE sender_id IN (?, ?) AND receiver_id IN (?, ?)', [userId, receiverId, userId, receiverId]);
-        //console.log(results);
         if (results[0].length > 0) {
             res.json(200, results[0]);
         } else {
