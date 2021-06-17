@@ -6,11 +6,27 @@ module.exports = {
 
     registerUser: async (req, res) => {
         try {
-            // TODO: Validations are missing
-            // TODO: Use validatorjs
             const name = req.body.fullName;
             const username = req.body.username;
             const password = req.body.password;
+            const data = {
+                name: req.body.fullName,
+                username: req.body.username,
+                password: req.body.password,
+            };
+
+            const rules = {
+                name: 'required',
+                username: 'required',
+                password: 'required',
+            };
+
+            const validation = new Validator(data, rules);
+
+            if (validation.fails()) {
+                return res.status(400).json({message: 'Invalid data.'});
+            }
+
             // TODO: You are not allowed to store the password in a clear format, use hashing.  Use a library called bcrypt.
             const results = await mysql.pool.promise().query('SELECT * FROM users WHERE username = ?', [username]);
 
