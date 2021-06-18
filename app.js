@@ -31,6 +31,7 @@ const connectedUsers = {};
 
 io.on('connection', socket => {
     const userId = socket.request._query['userId'];
+    console.log('userId ------------>', userId);
     connectedUsers[userId] = socket.id;
 
     socket.on('disconnect', () => {
@@ -39,14 +40,14 @@ io.on('connection', socket => {
 
     socket.on('message sent', (data) => {
         const receiverId = data.receiverId;
+        const senderId = data.senderId;
         const msg = data.msg;
 
         if (!connectedUsers.hasOwnProperty(receiverId)) {
             return;
         }
 
-        const receiverSocket = io.sockets[connectedUsers[receiverId]];
-        receiverSocket.emit('new message', {msg});
+        io.to(connectedUsers[receiverId]).to(connectedUsers[senderId]).emit('new message', {msg, receiverId, senderId});
     })
 });
 

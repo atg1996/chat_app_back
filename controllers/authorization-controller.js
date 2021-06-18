@@ -58,7 +58,7 @@ module.exports = {
                         let user = results[0];
                         // TODO: In the case when there are many users this method won't work.  Use a technique called pagination.  Investigate how to do this.
                         const usernames = await AuthorisationManager.loginUsers(user.id);
-                        console.log(usernames);
+
                         if (usernames.length > 0) {
                             await res.status(200).json({
                                 success: true,
