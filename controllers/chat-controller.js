@@ -27,30 +27,33 @@ module.exports = {
         return res.status(200);
     },
 
-    getMessages: async (req, res) => {
-        try {
-            const userId = req.body.sender;
-            const receiverId = req.body.receiver;
+    getMessages: (req, res) => {
+        const userId = req.body.sender;
+        const receiverId = req.body.receiver;
+        const limit = req.body.limit || 30;
+        const offset = req.body.offset || 0;
 
-            const validation = new Validator({userId, receiverId}, {
-                userId: 'integer|required',
-                receiverId: 'integer|required',
-            });
+        const validation = new Validator({userId, receiverId, limit, offset}, {
+            userId: 'integer|required',
+            receiverId: 'integer|required',
+            limit: 'integer|required',
+            offset: 'integer|required',
+        });
 
-            if (validation.fails()) {
-                return res.status(400).json({success: false, message: 'Invalid data.'});
-            }
-
-            // TODO: Pagination for the messages !!!
-            const results = await ChatManager.getMessages(userId, receiverId);
-
-            if (results[0].length > 0) {
-                res.status(200).json(results[0]);
-            } else {
-                res.status(200).json([]);
-            }
-        } catch (err) {
-            console.log(err);
+        if (validation.fails()) {
+            return res.status(400).json({success: false, message: 'Invalid data.'});
         }
+
+        console.log('2222222222222');
+        const messagesGen = ChatManager.getMessages(userId, receiverId, limit, offset);
+        console.log('49', messagesGen.next());
+
+        console.log('51');
+
+        // if (results[0].length > 0) {
+        //     res.status(200).json(results[0]);
+        // } else {
+        //     res.status(200).json([]);
+        // }
     },
 }

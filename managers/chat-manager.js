@@ -1,24 +1,20 @@
-const mysql = require('../sql');
+const StaticData = require('../utils/StaticData');
 
 module.exports = {
-
     addMessage: async (message, senderId, receiverId) => {
-        await mysql.pool.getConnection(((err, connection) => {
-            if (err) {
-                connection.release();
-                throw new Error(err.message);
-            }
-
-            connection.query(`INSERT INTO messages (sender_id, receiver_id, message) VALUES("${senderId}", "${receiverId}", "${message}")`, (queryErr, result, fields) => {
-                connection.release();
-                if (queryErr) {
-                    throw new Error(queryErr.message);
-                }
-            });
-        }))
+        let connection = await StaticData.DBConnectionPool.getConnection();
+        await connection.query('INSERT INTO messages (sender_id, receiver_id, message) VALUES(?, ?, ?)', [
+            senderId, receiverId, message
+        ]);
+        connection.close();
     },
 
-    getMessages: async (userId, receiverId) => {
-        return await mysql.pool.promise().query('SELECT * FROM messages WHERE sender_id IN (?, ?) AND receiver_id IN (?, ?)', [userId, receiverId, userId, receiverId]);
-    },
+    getMessages: async (userId, receiverId, limit, offset) => {
+        let connection = await StaticData.DBConnectionPool.getConnection();
+        let result = await connection.query('SELECT * FROM messages WHERE sender_id IN (?, ?) AND receiver_id IN (?, ?) LIMIT ? OFFSET ?', [
+            userId, receiverId, userId, receiverId, limit, offset
+        ]);
+        connection.close();
+        return result;
+    }
 }
