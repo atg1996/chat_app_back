@@ -2,30 +2,6 @@ const ChatManager = require('../managers/chat-manager');
 const Validator = require('validatorjs');
 
 module.exports = {
-    addMessage: async (req, res) => {
-        const message = req.body.sentMessage;
-        const senderId = req.body.sender;
-        const receiverId = req.body.receiver;
-
-        const validation = new Validator({senderId, receiverId, message}, {
-            senderId: 'integer|required',
-            receiverId: 'integer|required',
-            message: 'required'
-        });
-
-        if (validation.fails()) {
-            return res.status(400).json({success: false, message: 'Invalid data.'});
-        }
-
-        try {
-            await ChatManager.addMessage(message, senderId, receiverId);
-        } catch (e) {
-            res.status(404).json({success: false, message: 'Internal Error'});
-        }
-
-
-        return res.status(200);
-    },
 
     getMessages: async (req, res) => {
         const userId = req.body.sender;
@@ -52,4 +28,24 @@ module.exports = {
             res.status(200).json([]);
         }
     },
+
+    saveMessage: async (senderId, receiverId, message) => {
+        const validation = new Validator({senderId, receiverId, message}, {
+            senderId: 'integer|required',
+            receiverId: 'integer|required',
+            message: 'required'
+        });
+
+        if (validation.fails()) {
+            return {success: false, message: 'Invalid data.'};
+        }
+
+        try {
+            await ChatManager.addMessage(message, senderId, receiverId);
+        } catch (e) {
+            return {success: false, message: 'Internal Error'};
+        }
+
+        return {success: true};
+    }
 }
