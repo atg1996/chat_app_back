@@ -1,22 +1,48 @@
-const mysql = require('../sql');
+const ChatManager = require('../managers/chat-manager');
+const Validator = require('validatorjs');
 
 module.exports = {
     addMessage: async (req, res) => {
         const message = req.body.sentMessage;
-        const senderID = req.body.sender;
-        const receiverID = req.body.receiver;
+        const senderId = req.body.sender;
+        const receiverId = req.body.receiver;
 
-        await mysql.pool.promise().query('INSERT INTO messages (sender_id, receiver_id, message) VALUES(?, ?, ?)', [senderID, receiverID, message]);
+        const validation = new Validator({senderId, receiverId, message}, {
+            senderId: 'integer|required',
+            receiverId: 'integer|required',
+            message: 'required'
+        });
 
-        await res.status(200);
+        if (validation.fails()) {
+            return res.status(400).json({success: false, message: 'Invalid data.'});
+        }
+
+        try {
+            await ChatManager.addMessage(message, senderId, receiverId);
+        } catch (e) {
+            res.status(404).json({success: false, message: 'Internal Error'});
+        }
+
+
+        return res.status(200);
     },
 
     getMessages: async (req, res) => {
         try {
             const userId = req.body.sender;
             const receiverId = req.body.receiver;
+
+            const validation = new Validator({userId, receiverId}, {
+                userId: 'integer|required',
+                receiverId: 'integer|required',
+            });
+
+            if (validation.fails()) {
+                return res.status(400).json({success: false, message: 'Invalid data.'});
+            }
+
             // TODO: Pagination for the messages !!!
-            const results = await mysql.pool.promise().query('SELECT * FROM messages WHERE sender_id IN (?, ?) AND receiver_id IN (?, ?)', [userId, receiverId, userId, receiverId]);
+            const results = await ChatManager.getMessages(userId, receiverId);
 
             if (results[0].length > 0) {
                 res.status(200).json(results[0]);

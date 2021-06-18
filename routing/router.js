@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const authorizationController = require('../controllers/authorization-controller');
-const chatController = require('../controllers/chat-controller');
+const AuthorizationController = require('../controllers/authorization-controller');
+const ChatController = require('../controllers/chat-controller');
 
 
-router.post('/message', chatController.addMessage);
-router.post("/messages", chatController.getMessages);
-router.post("/register", authorizationController.registerUser);
-router.post("/login", authorizationController.loginUser);
+router.post('/message', ChatController.addMessage);
+router.post("/messages", ChatController.getMessages);
+router.post("/register", AuthorizationController.registerUser);
+router.post("/login", AuthorizationController.loginUser);
 
 
 module.exports = router
