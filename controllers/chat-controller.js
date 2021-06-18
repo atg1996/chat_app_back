@@ -27,7 +27,7 @@ module.exports = {
         return res.status(200);
     },
 
-    getMessages: (req, res) => {
+    getMessages: async (req, res) => {
         const userId = req.body.sender;
         const receiverId = req.body.receiver;
         const limit = req.body.limit || 30;
@@ -44,16 +44,12 @@ module.exports = {
             return res.status(400).json({success: false, message: 'Invalid data.'});
         }
 
-        console.log('2222222222222');
-        const messagesGen = ChatManager.getMessages(userId, receiverId, limit, offset);
-        console.log('49', messagesGen.next());
+        const results = await ChatManager.getMessages(userId, receiverId, limit, offset);
 
-        console.log('51');
-
-        // if (results[0].length > 0) {
-        //     res.status(200).json(results[0]);
-        // } else {
-        //     res.status(200).json([]);
-        // }
+        if (results.length > 0) {
+            res.status(200).json(results);
+        } else {
+            res.status(200).json([]);
+        }
     },
 }
