@@ -13,6 +13,7 @@ const io = new Server(server, {
         origins: ['http://localhost:4200']
     }
 });
+const ChatController = require('./controllers/chat-controller');
 
 app.use(session({
     secret: 'secret',
@@ -31,14 +32,13 @@ const connectedUsers = {};
 
 io.on('connection', socket => {
     const userId = socket.request._query['userId'];
-    console.log('userId ------------>', userId);
     connectedUsers[userId] = socket.id;
 
     socket.on('disconnect', () => {
         delete connectedUsers[userId];
-    })
+    });
 
-    socket.on('message sent', (data) => {
+    socket.on('message sent', async (data) => {
         const receiverId = data.receiverId;
         const senderId = data.senderId;
         const msg = data.msg;
@@ -47,7 +47,8 @@ io.on('connection', socket => {
             return;
         }
 
-        io.to(connectedUsers[receiverId]).to(connectedUsers[senderId]).emit('new message', {msg, receiverId, senderId});
+        let res = await ChatController.saveMessage(senderId, receiverId, msg);
+        io.to(connectedUsers[receiverId]).to(connectedUsers[senderId]).emit('new message', {success: res.success, msg, receiverId, senderId});
     })
 });
 
