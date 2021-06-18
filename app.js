@@ -18,7 +18,7 @@ app.use(bp.urlencoded({extended: false}))
 app.use(bp.json())
 app.use(cors())
 app.use(require("morgan")("dev"))
-app.use('', router);
+app.use('/', router);
 
 
 app.listen(process.env.HTTP_PORT, '127.0.0.1', () => {
