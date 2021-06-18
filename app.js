@@ -43,11 +43,12 @@ io.on('connection', socket => {
         const senderId = data.senderId;
         const msg = data.msg;
 
+        let res = await ChatController.saveMessage(senderId, receiverId, msg);
         if (!connectedUsers.hasOwnProperty(receiverId)) {
+            io.to(connectedUsers[senderId]).emit('new message', {success: res.success, msg, receiverId, senderId});
             return;
         }
 
-        let res = await ChatController.saveMessage(senderId, receiverId, msg);
         io.to(connectedUsers[receiverId]).to(connectedUsers[senderId]).emit('new message', {success: res.success, msg, receiverId, senderId});
     })
 });

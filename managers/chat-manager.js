@@ -11,7 +11,7 @@ module.exports = {
 
     getMessages: async (userId, receiverId, limit, offset) => {
         let connection = await StaticData.DBConnectionPool.getConnection();
-        let result = await connection.query('SELECT * FROM messages WHERE sender_id IN (?, ?) AND receiver_id IN (?, ?) LIMIT ? OFFSET ?', [
+        let result = await connection.query('SELECT * FROM messages WHERE sender_id IN (?, ?) AND receiver_id IN (?, ?) ORDER BY id DESC LIMIT ? OFFSET ?', [
             userId, receiverId, userId, receiverId, limit, offset
         ]);
         connection.close();
