@@ -30,11 +30,4 @@ module.exports = {
             })
         });
     },
-
-    loginUsers: async (userId) => {
-        let connection = await StaticData.DBConnectionPool.getConnection();
-        let result = await connection.query('SELECT id, name FROM users WHERE id <> ?', [userId]);
-        connection.close();
-        return result;
-    }
 }

@@ -59,19 +59,12 @@ module.exports = {
                 if (result.length > 0) {
                     if (result.length === 1) {
                         let user = result[0];
-                        // TODO: In the case when there are many users this method won't work.  Use a technique called pagination.  Investigate how to do this.
-                        const usernames = await AuthorisationManager.loginUsers(user.id);
 
-                        if (usernames.length > 0) {
-                            await res.status(200).json({
-                                success: true,
-                                token: token,
-                                usernames: usernames,
-                                user_id: user.id
-                            });
-                        } else {
-                            await res.status(401).json({success:false, message: 'Unauthorized.'});
-                        }
+                        await res.status(200).json({
+                            success: true,
+                            token: token,
+                            user_id: user.id
+                        });
                     } else {
                         // TODO: Derive from Error and create a class called InternalException
                         throw new Error("Internal exception");
