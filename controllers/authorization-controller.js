@@ -28,18 +28,18 @@ module.exports = {
             const validation = new Validator(data, rules);
 
             if (validation.fails()) {
-                return res.status(400).json({message: 'Invalid data.'});
+                return res.status(400).json({success: false, message: 'Invalid data.'});
             }
             // TODO: You are not allowed to store the password in a clear format, use hashing.  Use a library called bcrypt.
             const results = await AuthorisationManager.getUserByName(username);
             if (results.length > 0) {
-                await res.status(400).json({message: 'Username already exists.'});
+                await res.status(400).json({success: false, message: 'Username already exists.'});
             } else {
                 await AuthorisationManager.registerUser(name, username, password);
-                await res.json(200);
+                await res.json(200).json({success: true});
             }
         } catch (e) {
-            await res.status(400).json({message: e.message});
+            await res.status(400).json({success: false, message: e.message});
         }
     },
 
