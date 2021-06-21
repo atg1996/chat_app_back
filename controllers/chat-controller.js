@@ -47,5 +47,33 @@ module.exports = {
         }
 
         return {success: true};
+    },
+
+    getUsers: async (req, res) => {
+        const data = {
+            userId: +req.query.userId,
+            offset: +req.query.offset,
+            limit: +req.query.limit,
+        }
+
+        const rules = {
+            userId: "integer|required",
+            offset: "integer",
+            limit: "integer",
+        }
+
+        const validation = new Validator(data, rules);
+
+        if (validation.fails()) {
+            return res.status(400).json({success: false, message:"Invalid data"});
+        }
+
+        const users = await ChatManager.getUsers(data);
+
+        if (!users.length) {
+            return res.status(400).json({success: false, message:"Users not found"});
+        }
+
+        return res.status(200).json({success:true, users:users});
     }
 }
