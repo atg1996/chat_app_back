@@ -20,14 +20,17 @@ module.exports = {
     },
 
     registerUser: async (name, username, password) => {
-        await bcrypt.genSalt(saltRounds, async function (err, salt) {
-            await bcrypt.hash(password, salt,  async function (err, hash) {
-                let connection = await StaticData.DBConnectionPool.getConnection();
-                await connection.query('INSERT INTO users (name, username, pass) VALUES(?, ?, ?)', [
-                    name, username, hash
-                ]);
-                connection.close();
-            })
-        });
+        return new Promise((resolve, reject) => {
+            bcrypt.genSalt(saltRounds, async function (err, salt) {
+                await bcrypt.hash(password, salt,  async function (err, hash) {
+                    let connection = await StaticData.DBConnectionPool.getConnection();
+                    await connection.query('INSERT INTO users (name, username, pass) VALUES(?, ?, ?)', [
+                        name, username, hash
+                    ]);
+                    connection.close();
+                    resolve();
+                })
+            });
+        })
     },
 }

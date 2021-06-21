@@ -19,12 +19,11 @@ module.exports = {
     },
 
     getUsers: async (data) => {
-        console.log(data);
         let connection = await StaticData.DBConnectionPool.getConnection();
         let result = await connection.query('SELECT id, name FROM users WHERE id <> ? ORDER BY id LIMIT ? OFFSET ?', [
             data.userId, data.limit || 10, data.offset || 0
         ]);
         connection.close();
         return result;
-    }
+    },
 }
