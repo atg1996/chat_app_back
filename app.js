@@ -53,7 +53,7 @@ io.on('connection', socket => {
     })
 });
 
-server.listen(process.env.HTTP_PORT, '192.168.1.9', () => {
+server.listen(process.env.HTTP_PORT, '192.168.1.4', () => {
     console.log("Express server listening on port " + process.env.HTTP_PORT);
 });
 
