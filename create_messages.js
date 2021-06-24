@@ -6,7 +6,6 @@ let connection = mysql.createConnection({
     database: 'chat'
 });
 
-// connect to the MySQL server
 connection.connect(function(err ) {
     if (err) {
         return console.error('error: ' + err.message );

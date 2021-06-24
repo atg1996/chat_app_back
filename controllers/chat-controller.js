@@ -6,7 +6,7 @@ module.exports = {
     getMessages: async (req, res) => {
         const userId = req.body.sender;
         const receiverId = req.body.receiver;
-        const limit = req.body.limit || 10;
+        const limit = req.body.limit || 15;
         const offset = req.body.offset || 0;
 
         const validation = new Validator({userId, receiverId, limit, offset}, {
