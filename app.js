@@ -32,10 +32,16 @@ const connectedUsers = {};
 
 io.on('connection', socket => {
     const userId = socket.request._query['userId'];
+
+    io.emit("user connected", {userId});
+    io.to(socket.id).emit("online users", {allUsers:Object.keys(connectedUsers)} )
+
     connectedUsers[userId] = socket.id;
+
 
     socket.on('disconnect', () => {
         delete connectedUsers[userId];
+        io.emit("user disconnected", {userId})
     });
 
     socket.on('message sent', async (data) => {
