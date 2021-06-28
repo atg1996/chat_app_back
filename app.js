@@ -38,7 +38,6 @@ io.on('connection', socket => {
 
     connectedUsers[userId] = socket.id;
 
-
     socket.on('disconnect', () => {
         delete connectedUsers[userId];
         io.emit("user disconnected", {userId})
