@@ -30,6 +30,7 @@ app.use('', router);
 
 const connectedUsers = {};
 
+
 io.on('connection', socket => {
     const userId = socket.request._query['userId'];
 
@@ -48,6 +49,13 @@ io.on('connection', socket => {
         const senderId = data.senderId;
         const msg = data.msg;
 
+    socket.on('someone typing', async(data) => {
+        const receiverId = data.receiverId;
+        const senderId = data.senderId;
+        io.emit('typing', { receiverId,senderId})
+
+    })
+
         let res = await ChatController.saveMessage(senderId, receiverId, msg);
         if (!connectedUsers.hasOwnProperty(receiverId)) {
             io.to(connectedUsers[senderId]).emit('new message', {success: res.success, msg, receiverId, senderId});
@@ -58,7 +66,7 @@ io.on('connection', socket => {
     })
 });
 
-server.listen(process.env.HTTP_PORT, '192.168.1.39', () => {
+server.listen(process.env.HTTP_PORT, '192.168.1.43', () => {
     console.log("Express server listening on port " + process.env.HTTP_PORT);
 });
 
